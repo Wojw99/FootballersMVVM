@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace FootballersMVVM.ViewModels
@@ -58,18 +59,28 @@ namespace FootballersMVVM.ViewModels
         private void RemoveFootballer()
         {
             var atIndex = SelectedFootIndex;
-            SelectedFootIndex = -1;
-            FootballerList.RemoveAt(atIndex);
-            FootballerSerialization.SaveTo(serializationPath, FootballerList.ToList());
+            var dialogResult = MessageBox.Show($"Czy na pewno usunąć{Environment.NewLine}obiekt \"{FootballerList[atIndex]}\"?", "Usuń", MessageBoxButton.YesNo);
+
+            if (dialogResult == MessageBoxResult.Yes)
+            {
+                SelectedFootIndex = -1;
+                FootballerList.RemoveAt(atIndex);
+                FootballerSerialization.SaveTo(serializationPath, FootballerList.ToList());
+            }
         }
 
         private void EditFootballer()
         {
             var footballer = new FootballerModel(TextBoxFirstName, TextBoxLastName, SliderWeight, SliderAge);
-            FootballerList.Insert(SelectedFootIndex, footballer);
-            SelectedFootIndex -= 1;
-            FootballerList.RemoveAt(SelectedFootIndex + 1);
-            FootballerSerialization.SaveTo(serializationPath, FootballerList.ToList());
+            var dialogResult = MessageBox.Show($"Czy na pewno chcesz zmienić dane{Environment.NewLine}obiektu \"{FootballerList[SelectedFootIndex]}\"?", "Edytuj", MessageBoxButton.YesNo);
+
+            if (dialogResult == MessageBoxResult.Yes)
+            {
+                FootballerList.Insert(SelectedFootIndex, footballer);
+                SelectedFootIndex -= 1;
+                FootballerList.RemoveAt(SelectedFootIndex + 1);
+                FootballerSerialization.SaveTo(serializationPath, FootballerList.ToList());
+            }
         }
 
         #region Get/Set Commands
